@@ -51,10 +51,10 @@ class Model {
         this.onAvengerChange(this.avengersList);
     }
 
-    deleteAvenger(id) {
-        this.avengersList.filter((avenger) => avenger.id !== id);
-        this.onAvengerChange(this.avengersList);
-    }
+    // deleteAvenger(id) {
+    //     this.avengersList.filter((avenger) => avenger.id !== id);
+    //     this.onAvengerChange(this.avengersList);
+    // }
 
     toggleAdmin() {
         if(this.admin) {
@@ -82,35 +82,36 @@ class View {
 
     // ======================
 
-    renderAdminPanel() {
-        const adminTemplate = this._createAdminTemplate();
+    renderAdminPanel(avenger) {
+        $("#admin-panel").empty();
+        const adminTemplate = this._createAdminTemplate(avenger);
         $("#admin-panel").append(adminTemplate);
     }
 
-    _createAdminTemplate() {
+    _createAdminTemplate(avenger) {
         const template = `
         <form id="admin-tools" class="bg-light p-4">
             <h2>Admin Tools</h2>
             <hr>
 
             <div class="mb-3">
-                <label for="avenger-name" class="form-label">Avenger Name:</label>
-                <input type="text" class="form-control" id="admin-avenger-name">
+                <label for="admin-avenger-name" class="form-label">Avenger Name:</label>
+                <input type="text" class="form-control" id="admin-avenger-name" placeholder="${avenger.name}">
             </div>
 
             <div class="mb-3">
-                    <label for="avenger-url" class="form-label">Avenger URL:</label>
-                    <input type="text" class="form-control" id="admin-avenger-url">
+                    <label for="admin-avenger-url" class="form-label">Avenger URL:</label>
+                    <input type="text" class="form-control" id="admin-avenger-url" placeholder="${avenger.url}">
             </div>
 
             <div class="mb-3">
-                <label for="avenger-clicks" class="form-label">Avenger Clicks:</label>
-                <input type="" class="form-control" id="admin-avenger-clicks">
+                <label for="admin-avenger-clicks" class="form-label">Avenger Clicks:</label>
+                <input type="number" class="form-control" id="admin-avenger-clicks" placeholder="${avenger.clicks}">
             </div>
 
             <div class="buttons d-flex justify-content-between">
-                <button type="submit" class="btn btn-primary">Submit</button>
-                <button type="submit" class="btn btn-danger">Cancel</button>
+                <button type="submit" class="btn btn-primary" id="save-button">Submit</button>
+                <button type="submit" class="btn btn-danger" id="cancel-button">Cancel</button>
             </div>
         </form>
         `;
@@ -185,23 +186,34 @@ class View {
         });
     }
 
-    bindAddAvenger(handler) {
+    bindEditAvenger(handler) {
 
     }
       
-    bindDeleteAvenger(handler) {
-
-    }
-      
-    bindToggleAdmin(handler) {
-        $("#admin-btn").click(function (e) { 
+    bindCancel(handler) {
+        $("#admin-panel").on("click", "#cancel-button", function (e) {
             e.preventDefault();
+
+            $("#admin-panel").empty();
 
             $("#admin-toggler").toggleClass("d-none");
             $("#admin-panel").toggleClass("d-none");
 
             handler();
         });
+    }
+      
+    bindToggleAdmin(handler) {
+        $("#admin-toggler").on("click", "#admin-btn", function (e) {
+            e.preventDefault();
+    
+            $("#admin-toggler").toggleClass("d-none");
+            $("#admin-panel").toggleClass("d-none");
+    
+            handler();
+            
+        });
+
 
     }
 }
@@ -218,14 +230,14 @@ class Controller {
         this.view.bindSelectAvenger(this.handleSelectAvenger);
         this.view.bindClickAvenger(this.handleAddClick);
         this.view.bindToggleAdmin(this.handleToggleAdmin);
+        this.view.bindCancel(this.handleToggleAdmin);
     }
 
     onAvengerChange = (avengers) => {
         this.view.render(avengers[this.model.currentAvengerID - 1], avengers);
 
         if(this.model.admin) {
-            console.log("creating admin panel");
-            this.view.renderAdminPanel();
+            this.view.renderAdminPanel(avengers[this.model.currentAvengerID - 1]);
         }
     }
 
@@ -236,18 +248,10 @@ class Controller {
     handleAddClick = () => {
         this.model.addClicks();
     }
-
-    handleAddAvenger = (avenger) => {
-        this.model.addAvenger(avenger.name, avenger.url, avenger.clicks);
-    }
       
     handleEditAvenger = (avenger) => {
         this.model.editAvenger(avenger.id, avenger.name, avenger.url, avenger.clicks)
-    }
-      
-    handleDeleteAvenger = (avenger) => {
-        this.model.deleteAvenger(avenger.id)
-    }
+    }   
       
     handleToggleAdmin = () => {
         this.model.toggleAdmin()
