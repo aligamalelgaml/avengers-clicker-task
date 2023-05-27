@@ -1,6 +1,10 @@
 class View {
     constructor() {}
 
+    /** Renders the currently selected avenger and thumbnails for all avengers.
+     * @param {*} avenger currently selected avenger
+     * @param {*} avengers all avengers
+     */
     render(avenger, avengers) {
         $("#thumbnail-col, #current-avenger").empty();
         this.renderCurrentAvenger(avenger);
@@ -9,12 +13,19 @@ class View {
 
     // ======================
 
+    /** Renders the admin panel.
+     * @param {*} avenger currently selected avenger
+     */
     renderAdminPanel(avenger) {
         $("#admin-panel").empty();
         const adminTemplate = this._createAdminTemplate(avenger);
         $("#admin-panel").append(adminTemplate);
     }
 
+    /** Helper function containing the template for the creation of the admin form HTML element.
+     * @param {*} avenger currently selected avenger
+     * @returns {string} HTML template of form with values of currently selected avenger.
+     */
     _createAdminTemplate(avenger) {
         const template = `
         <form id="admin-tools" class="bg-light p-4">
@@ -48,11 +59,18 @@ class View {
 
     // ======================
 
+    /** Renders currently selected avenger
+     * @param {*} avenger currently selected avenger.
+     */
     renderCurrentAvenger(avenger) {
         const avengerTemplate = this._createAvengerTemplate(avenger);
         $("#current-avenger").append(avengerTemplate);
     }
 
+    /** Helper function that creates the HTML element for the currently selected avenger.
+     * @param {*} avenger currently selected avenger.
+     * @returns {string} HTML template of currently selected avenger (name, image, clicks)
+     */
     _createAvengerTemplate(avenger) {
         const template = `
         <div class="row text-center">
@@ -73,6 +91,9 @@ class View {
 
     // ======================
 
+    /** Renders the thumbnails of all stored avengers.
+     * @param {*} avengers all added avengers.
+     */
     renderThumbnails(avengers) {
         avengers.forEach(avenger => {
             const thumbnailTemplate = this._createAvengerThumbnailTemplate(avenger.id, avenger.name, avenger.url);
@@ -80,6 +101,12 @@ class View {
         });
     }
 
+    /** Helper function that creates the HTML template for all avengers.
+     * @param {*} id ID of said avenger.
+     * @param {*} name name of said avenger.
+     * @param {*} url url of said avenger.
+     * @returns {string} HTML template of a single thumbnail for a single avenger.
+     */
     _createAvengerThumbnailTemplate(id, name, url) {
         const template = `
         <img src="${url}" class="w-50 mt-3 thumbnail-img" id="${id}" alt="an image of ${name}">
@@ -90,8 +117,13 @@ class View {
 
     // ======================
 
+    /**
+     * Helper function that resets the admin panel and toggles it off.
+     */
     _resetForm() {
-        $("#admin-tools").reset();
+        $("#admin-toggler").toggleClass("d-none");
+        $("#admin-panel").toggleClass("d-none");
+        $("#admin-panel").empty();
     }
 
     // ======================
@@ -113,27 +145,23 @@ class View {
     }
 
     bindEditAvenger(handler) {
-        $("#admin-panel").on("click", "#save-button", function (e) {
+        $("#admin-panel").on("click", "#save-button", (e) => {
             e.preventDefault();
 
             handler({name: $("#admin-avenger-name").val(), url: $("#admin-avenger-url").val(), clicks: $("#admin-avenger-clicks").val()});
 
-            $("#admin-panel").empty();
-            $("#admin-toggler").toggleClass("d-none");
-            $("#admin-panel").toggleClass("d-none");
+            this._resetForm();
         });
 
     }
       
     bindCancel(handler) {
-        $("#admin-panel").on("click", "#cancel-button", function (e) {
+        $("#admin-panel").on("click", "#cancel-button", (e) => {
             e.preventDefault();
 
             handler();
             
-            $("#admin-toggler").toggleClass("d-none");
-            $("#admin-panel").toggleClass("d-none");
-            $("#admin-panel").empty();
+            this._resetForm();
         });
     }
       
