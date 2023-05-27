@@ -128,6 +128,9 @@ class View {
 
     // ======================
 
+    /** Notifies the controller of a new avenger selection event.
+     * @param {*} handler binds to the controller's handleSelectAvenger function
+     */
     bindSelectAvenger(handler) {
         $("#thumbnail-col").on("click", ".thumbnail-img", function(e) {
             e.preventDefault();
@@ -136,6 +139,9 @@ class View {
         });
     }
 
+    /** Notifies the controller of a click event.
+     * @param {*} handler binds to the controller's handleAddClick function
+     */
     bindClickAvenger(handler) {
         $("#current-avenger").on("click", "#avenger-img", function (e) {
             e.preventDefault();
@@ -144,6 +150,9 @@ class View {
         });
     }
 
+    /** Grabs the values inserted into the form and passed it to a handler function in the controller
+     * @param {*} handler binds to the controller's handleEditAvenger function
+     */
     bindEditAvenger(handler) {
         $("#admin-panel").on("click", "#save-button", (e) => {
             e.preventDefault();
@@ -155,6 +164,9 @@ class View {
 
     }
       
+    /** binds to the controller's handleToggleAdmin function and closes the admin panel.
+     * @param {*} handler handleToggleAdmin
+     */
     bindCancel(handler) {
         $("#admin-panel").on("click", "#cancel-button", (e) => {
             e.preventDefault();
@@ -164,7 +176,10 @@ class View {
             this._resetForm();
         });
     }
-      
+
+    /** binds to the controller's handleToggleAdmin function and opens the admin panel.
+     * @param {*} handler handleToggleAdmin
+     */
     bindToggleAdmin(handler) {
         $("#admin-toggler").on("click", "#admin-btn", function (e) {
             e.preventDefault();
